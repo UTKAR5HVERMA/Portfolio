@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+// Nodemailer needs the Node.js runtime (not Edge).
+export const runtime = "nodejs";
 
 interface ContactPayload {
   name?: string;
@@ -33,10 +37,51 @@ export async function POST(request: Request) {
     );
   }
 
-  // TODO: wire up real delivery — forward to the FastAPI backend, an email
-  // service (Resend / SES), or persist to a DB. For now we log and accept it
-  // so the UI flow is fully functional.
-  console.log("[contact] new message:", { name, email, message });
+  const user = process.env.GMAIL_USER;
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  const to = process.env.CONTACT_TO || user;
+
+  if (!user || !pass) {
+    console.error("[contact] GMAIL_USER / GMAIL_APP_PASSWORD not configured.");
+    return NextResponse.json(
+      { error: "Email is not configured on the server." },
+      { status: 500 }
+    );
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass },
+  });
+
+  try {
+    await transporter.sendMail({
+      from: `"Portfolio Contact" <${user}>`,
+      to,
+      replyTo: `"${name}" <${email}>`,
+      subject: "portfolio msg",
+      text: `Name : ${name}\nemail : ${email}\nmsg : ${message}`,
+      html:
+        `<p><strong>Name :</strong> ${escapeHtml(name)}</p>` +
+        `<p><strong>email :</strong> ${escapeHtml(email)}</p>` +
+        `<p><strong>msg :</strong><br/>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
+    });
+  } catch (err) {
+    console.error("[contact] failed to send email:", err);
+    return NextResponse.json(
+      { error: "Could not send your message. Please try again later." },
+      { status: 502 }
+    );
+  }
 
   return NextResponse.json({ ok: true }, { status: 200 });
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
