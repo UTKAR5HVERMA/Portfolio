@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: toggling `.dark` on <html> flips the theme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Semantic design tokens. Defaults below are the LIGHT theme.
+  `.dark` (set on <html> by ThemeProvider) overrides them with the
+  established black/red futuristic palette from the original design.
+*/
+:root {
+  --background: #f7f7f8;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-solid: #ffffff;
+  --surface-border: rgba(0, 0, 0, 0.08);
+  --foreground: #0a0a0b;
+  --muted: #52525b;
+  --accent: #dc2626;
+  --accent-strong: #b91c1c;
+  --accent-rgb: 220, 38, 38;
+}
+
+.dark {
+  --background: #000000;
+  --surface: rgba(17, 24, 39, 0.6);
+  --surface-solid: #0b0b0d;
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --foreground: #ffffff;
+  --muted: #9ca3af;
+  --accent: #ef4444;
+  --accent-strong: #dc2626;
+  --accent-rgb: 239, 68, 68;
+}
+
+/* Expose tokens as Tailwind theme colors so `bg-surface`, `text-muted`, etc. work. */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* When Lenis smooth-scroll is active it manages scrolling; disable native smooth. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Hidden scrollbar — navigation is via section pagination + dots. */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Accessibility: respect reduced-motion by disabling heavy animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
