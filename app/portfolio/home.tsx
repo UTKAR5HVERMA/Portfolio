@@ -58,7 +58,7 @@ export default function Home() {
           </MagneticButton>
 
           <MagneticButton
-            href="/Utkarsh_Verma_Resume.pdf"
+            href="/api/resume"
             download
             className="group relative overflow-hidden rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-8 py-4 font-medium text-[var(--foreground)] backdrop-blur-md transition-all hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)]"
           >

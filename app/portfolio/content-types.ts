@@ -96,6 +96,8 @@ export interface NavLink {
 }
 
 export interface Content {
+  /* Public URL (or static path) of the downloadable resume PDF. */
+  resumeUrl: string;
   personal: Personal;
   socials: Socials;
   about: About;

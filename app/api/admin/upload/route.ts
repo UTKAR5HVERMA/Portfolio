@@ -6,7 +6,7 @@ import { del, put } from "@vercel/blob";
 export const dynamic = "force-dynamic";
 
 const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
-const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
+const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif", "application/pdf"];
 
 // Local-dev fallback: images written here are served statically at /uploads/*.
 const LOCAL_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "File too large (max 8 MB)." }, { status: 400 });
   }
   if (file.type && !ALLOWED.includes(file.type)) {
-    return NextResponse.json({ error: "Unsupported image type." }, { status: 400 });
+    return NextResponse.json({ error: "Unsupported file type." }, { status: 400 });
   }
 
   const filename = `${Date.now()}-${slugify(file.name || "image")}`;

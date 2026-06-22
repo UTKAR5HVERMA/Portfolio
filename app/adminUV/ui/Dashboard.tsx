@@ -8,9 +8,11 @@ import { Field, ListEditor, StringList, TextArea, btnGhost, btnPrimary } from ".
 import ProjectsEditor from "./ProjectsEditor";
 import ExperienceEditor from "./ExperienceEditor";
 import SkillsEditor from "./SkillsEditor";
+import ResumeEditor from "./ResumeEditor";
 
 const TABS = [
   "Personal",
+  "Resume",
   "Socials",
   "About",
   "Skills",
@@ -136,6 +138,10 @@ export default function Dashboard({ initial }: { initial: Content }) {
               addLabel="Add specialization"
             />
           </div>
+        )}
+
+        {tab === "Resume" && (
+          <ResumeEditor value={content.resumeUrl} onChange={(v) => patch({ resumeUrl: v })} />
         )}
 
         {tab === "Socials" && (

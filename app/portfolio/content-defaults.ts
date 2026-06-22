@@ -7,6 +7,7 @@
 import type { Content } from "./content-types";
 
 export const defaultContent: Content = {
+  resumeUrl: "/Utkarsh_Verma_Resume.pdf",
   personal: {
     name: "Utkarsh Verma",
     firstName: "Utkarsh",
